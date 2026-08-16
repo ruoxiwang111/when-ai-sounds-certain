@@ -5,7 +5,7 @@
   "type": "module",
   "description": "Stage 1 technical slice for a Human-AI Interaction research prototype.",
   "scripts": {
-    "test": "node --test",
+    "test": "node --test && python -m unittest discover -s analysis/tests -p \"test_*.py\"",
     "start": "http-server . -p 8000 -c-1",
     "serve": "python -m http.server 8000"
   },
