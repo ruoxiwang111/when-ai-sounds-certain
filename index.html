@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>When AI Sounds Certain — Research Prototype</title>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8.2.2/css/jspsych.css">
+    <link rel="stylesheet" href="src/styles.css">
+    <style>
+      .startup-error { width: min(100%, 48rem); margin: 2rem auto; padding: 1.25rem; color: #4a1111; background: #fff0f0; border: 2px solid #a83232; border-radius: 0.75rem; }
+    </style>
+    <script src="https://unpkg.com/jspsych@8.2.2/dist/index.browser.min.js"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.1.0/dist/index.browser.min.js"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey-html-form@2.1.0/dist/index.browser.min.js"></script>
+  </head>
+  <body>
+    <div class="prototype-banner" role="note">Research prototype — do not enter personal information.</div>
+    <main id="jspsych-target" aria-live="polite"></main>
+    <noscript>This prototype requires JavaScript.</noscript>
+    <script type="module" src="src/experiment.js"></script>
+    <script>
+      window.addEventListener("load", function reportStartupFailure() {
+        window.setTimeout(function checkPrototypeStartup() {
+          const missing = [];
+          if (typeof window.initJsPsych !== "function") missing.push("jsPsych core");
+          if (typeof window.jsPsychHtmlButtonResponse === "undefined") missing.push("HTML Button Response plugin");
+          if (typeof window.jsPsychSurveyHtmlForm === "undefined") missing.push("Survey HTML Form plugin");
+
+          const target = document.getElementById("jspsych-target");
+          if (target && target.childElementCount === 0) missing.push("the Stage 1 ES module");
+          if (!target || missing.length === 0) return;
+
+          const error = document.createElement("section");
+          error.className = "startup-error";
+          error.setAttribute("role", "alert");
+
+          const heading = document.createElement("h1");
+          heading.textContent = "Prototype failed to start";
+          const detail = document.createElement("p");
+          detail.textContent = `Could not load: ${missing.join(", ")}.`;
+          const guidance = document.createElement("p");
+          guidance.textContent = "Run npm install, then npm start, and check the browser console and network panel for blocked CDN files or JavaScript module MIME-type errors.";
+
+          error.append(heading, detail, guidance);
+          target.replaceChildren(error);
+        }, 1000);
+      });
+    </script>
+  </body>
+</html>

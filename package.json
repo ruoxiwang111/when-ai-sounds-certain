@@ -1,0 +1,18 @@
+{
+  "name": "when-ai-sounds-certain",
+  "version": "0.2.0-stage1",
+  "private": true,
+  "type": "module",
+  "description": "Stage 1 technical slice for a Human-AI Interaction research prototype.",
+  "scripts": {
+    "test": "node --test",
+    "start": "http-server . -p 8000 -c-1",
+    "serve": "python -m http.server 8000"
+  },
+  "devDependencies": {
+    "http-server": "14.1.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
