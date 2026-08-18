@@ -1,98 +1,162 @@
 # When AI Sounds Certain
 
-A browser-based Human-AI Interaction research prototype investigating whether confident wording increases reliance on incorrect predefined AI advice.
+**A Human–AI Interaction study of confidence cues and reliance on incorrect AI advice**
 
-## Current scope
+This independent research project investigates whether the way an AI expresses confidence changes how people respond to incorrect advice.
 
-This repository currently implements the **Stage 1 technical slice** only:
+The central research question is:
 
-- one developer-test practice fixture;
-- one developer-test experimental fixture;
-- predefined deterministic AI advice;
-- browser-local test data;
-- JSON session export and trial-level CSV export.
+> **Does confident AI language increase users' reliance on incorrect AI advice?**
 
-It is not approved for real participant recruitment. The fixtures are unvalidated, the consent and debrief are drafts, and no direct personal information should be entered.
+Rather than evaluating model accuracy alone, the project focuses on the interaction between **AI communication style and human decision-making**, particularly when users must decide whether to retain their own judgment or follow an AI recommendation.
 
-## Technology
+---
 
-- jsPsych `8.2.2` (pinned CDN build)
-- jsPsych HTML Button Response plugin `2.1.0`
-- jsPsych Survey HTML Form plugin `2.1.0`
-- Plain JavaScript ES modules, HTML, and CSS
-- Node's built-in test runner
+## Research Question
 
-No React, backend, live LLM API, analytics, or authentication is used. The manipulation pretest submits through DataPipe to its linked OSF component; the main Stage 1 experiment remains local-only.
+The project examines whether linguistic confidence cues influence reliance on AI advice when the substantive answer and reasoning are held constant.
 
-## Run locally
+The experimental manipulation compares:
 
-From the repository root:
+- **High-confidence AI framing**
+- **Calibrated-confidence AI framing**
 
-```powershell
-npm install
-npm test
-npm start
-```
+The primary behavioral outcome is **harmful reliance**:
 
-Open `http://localhost:8000/`.
+> initially correct human judgment  
+> → incorrect AI advice  
+> → switch to the AI's incorrect answer
 
-The recommended server is the pinned development dependency `http-server`, started with cache disabled. Python's built-in server may serve JavaScript ES modules as `text/plain` on some Windows systems, causing the browser to reject `src/experiment.js`. It should therefore be used only as an optional fallback:
+This allows the study to distinguish between appropriate resistance to incorrect AI advice and potentially harmful over-reliance.
 
-```powershell
-python -m http.server 8000
-```
+---
 
-If the browser reports an ES-module MIME-type error with the Python fallback, stop it and use `npm start`.
+## Experimental Design
 
-Force a test condition with:
+The planned study uses a **between-subjects behavioral experiment**.
 
-- `http://localhost:8000/?condition=high_confidence`
-- `http://localhost:8000/?condition=calibrated_confidence`
+Participants first make an independent judgment, then receive predefined AI-style advice, and finally make a second decision.
 
-Without an override, one condition is randomly assigned once for the new page session. Refreshing creates a new test session; session recovery is intentionally not implemented.
+The experiment records:
 
-In the current Stage 1 export, `completed = true` means that the participant reached the final download screen. It does not confirm that either export button was used, and it is not a session-recovery or research-completion guarantee.
+- initial answer;
+- initial confidence;
+- AI advice condition;
+- final answer;
+- response time;
+- advice adoption or rejection;
+- final decision accuracy.
 
-The trial field `post_advice_decision_time_ms` measures the elapsed interval from the display of AI advice until submission of the final answer. It includes post-advice reading and decision time and must not be interpreted as pure advice-viewing time. `item_record_index` is the zero-based order of saved item records; it is not a jsPsych timeline index.
+AI responses are **pre-scripted rather than generated live**, allowing the substantive reasoning and correctness of the advice to be controlled across experimental conditions.
 
-## Manual metric checks
+---
 
-- **Harmful switch:** on the experimental fixture choose `C` initially, then follow the incorrect AI answer `B`.
-- **Reject incorrect advice:** on the experimental fixture choose `C` initially and keep `C` finally.
-- **Beneficial switch:** on the practice fixture choose any incorrect answer initially, then switch to the AI's correct answer `C`.
+## Reasoning Task Domains
 
-All exported records are labelled `data_type = "test"` and `storage_mode = "local_export"`.
+The experimental materials span four reasoning domains:
 
-## Manipulation-language pretest
+1. **Logical reasoning**
+2. **Evidence and information evaluation**
+3. **Quantitative and risk reasoning**
+4. **Text and argument evaluation**
 
-The separate developer-only pretest presents one predefined AI response and collects four 1–7 appearance ratings. It reuses the Stage 1 condition-rendering logic, stores no data remotely, and labels exports with `data_type = "test"`, `storage_mode = "local_export"`, and `study_phase = "manipulation_pretest"`. Its material is a developer fixture, not validated research material.
+Detailed item content, answer keys, AI-correctness assignments, and full pretest materials are withheld from the public repository while materials screening and data collection are ongoing.
 
-After running `npm install`, `npm test`, and `npm start`, open:
+---
 
-- `http://localhost:8000/pretest.html` for random assignment;
-- `http://localhost:8000/pretest.html?condition=high_confidence` to force high-confidence wording;
-- `http://localhost:8000/pretest.html?condition=calibrated_confidence` to force calibrated-confidence wording.
+## Research Development Pipeline
 
-Both forced conditions must show the same prompt context, substantive reasoning, answer, layout, and styling. Only the confidence wording changes.
+| Stage | Purpose | Status |
+|---|---|---|
+| Stage A | Item development, ambiguity checks, distractor and wording audits | ✅ Completed |
+| Stage B | Baseline item difficulty and option-choice screening | 🔄 In progress |
+| Stage C | Incorrect-AI advice plausibility screening | 🔄 In progress |
+| Stage D | Confidence-language manipulation validation | 🔄 In progress |
+| Final item selection | Freeze 12 experimental items | Planned |
+| Preregistration | Freeze hypotheses and analysis plan | Planned |
+| Main pilot | Human–AI reliance experiment | Planned |
+| Analysis | Mixed-effects behavioral analysis | Planned |
 
-### Pretest remote storage
+---
 
-On completion, the pretest makes one JSON upload through the pinned jsPsych-contrib Pipe plugin (`0.6.0`) using public DataPipe experiment ID `8xg76M2ReG1l`. DataPipe routes the file to the OSF component configured by the researcher. No OSF credential, API secret, password, or participant identifier is stored in this repository.
+## Current Status
 
-Browser-side random assignment remains enabled exactly as documented above. DataPipe condition assignment is disabled and the pretest never requests it. The URL condition overrides remain available for development testing.
+**Stage A material development is complete.**
 
-After a successful remote upload, no download is required. If the upload fails, the completion page displays the existing JSON and CSV downloads as a local fallback. Local export is a fallback/developer backup, not the primary participant submission path.
+A multi-stage materials-development process was used to audit:
 
-Do not begin real participant recruitment until the researcher has manually verified both forced conditions, a successful DataPipe upload, the resulting JSON file in the intended OSF component, and the failure-path local downloads. DataPipe collection status, OSF permissions, retention, ethics, consent, and withdrawal procedures also require researcher review.
+- answer uniqueness;
+- distractor functionality;
+- reasoning-mechanism overlap;
+- answer-position balance;
+- epistemic wording cues;
+- consistency between scripted AI advice and the intended reasoning error.
 
-## Manipulation-pretest analysis
+The active candidate set has now been frozen for formal item screening.
 
-Place pretest CSV exports in `analysis/pretest_data/`, then run:
+Stage B/C screening and Stage D manipulation validation are currently in progress.
 
-```powershell
-python analysis/pretest_analysis.py
-```
+---
 
-The script uses the Python standard library only. It reads all CSV files in that directory, validates their columns, excludes files not labelled exclusively as `study_phase = manipulation_pretest`, and reports group sizes, means, SDs, high-minus-calibrated differences, 95% confidence intervals, Cohen's d, and a Welch independent-samples comparison for perceived AI confidence.
+## Implementation
 
-The included `simulated_example.csv` exists only to test the workflow and is labelled `data_type = simulated`. Remove or move it before analyzing participant exports. The printed manipulation and confound thresholds are provisional development criteria, not universal scientific standards. Interpret descriptive patterns, effect sizes, uncertainty intervals, material quality, and p-values together; a small-sample p-value should never be the sole decision criterion.
+The experimental workflow is implemented as a browser-based study using:
+
+- **JavaScript**
+- **jsPsych 8**
+- **HTML / CSS**
+- structured **JSON and CSV** data export
+- **DataPipe / OSF** for research-data storage
+- automated tests for experimental logic and data structure
+
+The implementation supports:
+
+- between-subjects condition assignment;
+- controlled scripted AI advice;
+- response-time recording;
+- confidence ratings;
+- trial-level behavioral outcomes;
+- pseudo-randomized item sequences;
+- structured research-data schemas.
+
+---
+
+## Primary Behavioral Outcome
+
+The primary outcome is **harmful reliance**.
+
+A harmful-reliance trial occurs when:
+
+1. the participant's initial answer is correct;
+2. the AI advice is incorrect; and
+3. the participant changes to the incorrect AI recommendation.
+
+Secondary outcomes include:
+
+- AI advice adoption;
+- resistance to incorrect advice;
+- corrective switching;
+- final decision accuracy;
+- confidence calibration.
+
+---
+
+## Planned Analysis
+
+The confirmatory analysis focuses on trials in which:
+
+1. the participant's initial answer is correct; and
+2. the AI advice is incorrect.
+
+The primary trial-level outcome is whether the participant subsequently follows the incorrect AI recommendation.
+
+The planned analysis uses a mixed-effects logistic model with participant- and item-level random effects.
+
+A simplified specification is:
+
+```text
+followed_incorrect_AI ~ confidence_condition
+                      + initial_confidence
+                      + trial_position
+                      + (1 | participant)
+                      + (1 | item)
