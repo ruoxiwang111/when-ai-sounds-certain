@@ -160,3 +160,121 @@ followed_incorrect_AI ~ confidence_condition
                       + trial_position
                       + (1 | participant)
                       + (1 | item)
+```
+
+Additional analyses will examine advice adoption, resistance, final accuracy, and pre-specified item-level sensitivity checks.
+
+---
+
+## Repository Structure
+
+The current repository contains the browser-based research prototype, experimental logic, validation utilities, tests, and analysis infrastructure.
+
+```text
+when-ai-sounds-certain/
+│
+├── README.md
+├── LICENSE
+├── CHANGELOG.md
+│
+├── analysis/
+│
+├── src/
+│   ├── conditions.js
+│   ├── consent.js
+│   ├── experiment.js
+│   ├── export.js
+│   ├── items.js
+│   ├── metrics.js
+│   ├── post_task.js
+│   ├── pretest.js
+│   ├── pretest_data.js
+│   ├── pretest_remote_storage.js
+│   ├── styles.css
+│   └── validation.js
+│
+├── tests/
+│
+├── index.html
+├── pretest.html
+├── study_spec.md
+├── package.json
+└── package-lock.json
+```
+
+The repository structure will continue to evolve as formal screening, preregistration, and the main behavioral pilot are completed.
+
+---
+
+## Technical Notes
+
+The current prototype uses:
+
+- jsPsych `8.2.2`
+- jsPsych HTML Button Response plugin
+- jsPsych Survey HTML Form plugin
+- plain JavaScript ES modules
+- Node's built-in test runner
+
+To run the current development version locally:
+
+```bash
+npm install
+npm test
+npm start
+```
+
+Then open:
+
+```text
+http://localhost:8000/
+```
+
+Some parts of the repository remain development-facing and may change as the study moves from materials screening to the main experimental implementation.
+
+---
+
+## Research Integrity and Open Materials
+
+This repository is maintained as a public research portfolio and implementation record.
+
+To protect ongoing materials screening and later participant data collection, the public repository currently excludes:
+
+- complete experimental item banks;
+- answer keys;
+- final AI-correctness assignments;
+- full incorrect-advice stimulus banks;
+- internal reviewer feedback;
+- participant-level research data.
+
+These materials may be released after data collection and analysis where appropriate.
+
+The project does not use a live LLM during the experiment. AI-style advice is pre-scripted to support experimental control.
+
+---
+
+## Ethics and Data Handling
+
+This is an independent research project.
+
+Participation in pretests and later behavioral studies is voluntary. The experimental implementation is designed to minimize collection of identifying information.
+
+Research data are stored in structured form, with development, pretest, and main-study data separated by study phase.
+
+Participants exposed to item-screening or manipulation-pretest materials are not intended to be reused in the main behavioral pilot.
+
+---
+
+## Project Status
+
+**Independent research project — ongoing (2026).**
+
+The project is currently in the experimental-material screening and manipulation-validation stage.
+
+No confirmatory claim is made about the effect of AI confidence language before completion of the main behavioral pilot and planned analysis.
+
+---
+
+## Research Areas
+
+**Human–AI Interaction · AI Reliance · Trust Calibration · Behavioral AI Evaluation · AI Communication · Decision-Making**
