@@ -10,7 +10,7 @@ The central research question is:
 
 Rather than evaluating model accuracy alone, the project focuses on the interaction between **AI communication style and human decision-making**, particularly when users must decide whether to retain their own judgment or follow an AI recommendation.
 
----
+
 
 ## Research Question
 
@@ -29,7 +29,7 @@ The primary behavioral outcome is **harmful reliance**:
 
 This allows the study to distinguish between appropriate resistance to incorrect AI advice and potentially harmful over-reliance.
 
----
+
 
 ## Experimental Design
 
@@ -49,7 +49,7 @@ The experiment records:
 
 AI responses are **pre-scripted rather than generated live**, allowing the substantive reasoning and correctness of the advice to be controlled across experimental conditions.
 
----
+
 
 ## Reasoning Task Domains
 
@@ -62,7 +62,7 @@ The experimental materials span four reasoning domains:
 
 Detailed item content, answer keys, AI-correctness assignments, and full pretest materials are withheld from the public repository while materials screening and data collection are ongoing.
 
----
+
 
 ## Research Development Pipeline
 
@@ -77,7 +77,7 @@ Detailed item content, answer keys, AI-correctness assignments, and full pretest
 | Main pilot | Human–AI reliance experiment | Planned |
 | Analysis | Mixed-effects behavioral analysis | Planned |
 
----
+
 
 ## Current Status
 
@@ -96,7 +96,7 @@ The active candidate set has now been frozen for formal item screening.
 
 Stage B/C screening and Stage D manipulation validation are currently in progress.
 
----
+
 
 ## Implementation
 
@@ -119,7 +119,7 @@ The implementation supports:
 - pseudo-randomized item sequences;
 - structured research-data schemas.
 
----
+
 
 ## Primary Behavioral Outcome
 
@@ -139,7 +139,7 @@ Secondary outcomes include:
 - final decision accuracy;
 - confidence calibration.
 
----
+
 
 ## Planned Analysis
 
