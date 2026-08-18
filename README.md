@@ -22,7 +22,7 @@ It is not approved for real participant recruitment. The fixtures are unvalidate
 - Plain JavaScript ES modules, HTML, and CSS
 - Node's built-in test runner
 
-No React, backend, remote storage, live LLM API, analytics, or authentication is used.
+No React, backend, live LLM API, analytics, or authentication is used. The manipulation pretest submits through DataPipe to its linked OSF component; the main Stage 1 experiment remains local-only.
 
 ## Run locally
 
@@ -75,13 +75,17 @@ After running `npm install`, `npm test`, and `npm start`, open:
 
 Both forced conditions must show the same prompt context, substantive reasoning, answer, layout, and styling. Only the confidence wording changes.
 
+### Pretest remote storage
+
+On completion, the pretest makes one JSON upload through the pinned jsPsych-contrib Pipe plugin (`0.6.0`) using public DataPipe experiment ID `8xg76M2ReG1l`. DataPipe routes the file to the OSF component configured by the researcher. No OSF credential, API secret, password, or participant identifier is stored in this repository.
+
+Browser-side random assignment remains enabled exactly as documented above. DataPipe condition assignment is disabled and the pretest never requests it. The URL condition overrides remain available for development testing.
+
+After a successful remote upload, no download is required. If the upload fails, the completion page displays the existing JSON and CSV downloads as a local fallback. Local export is a fallback/developer backup, not the primary participant submission path.
+
+Do not begin real participant recruitment until the researcher has manually verified both forced conditions, a successful DataPipe upload, the resulting JSON file in the intended OSF component, and the failure-path local downloads. DataPipe collection status, OSF permissions, retention, ethics, consent, and withdrawal procedures also require researcher review.
+
 ## Manipulation-pretest analysis
-
-Install the pinned analysis dependency once:
-
-```powershell
-python -m pip install -r analysis/requirements.txt
-```
 
 Place pretest CSV exports in `analysis/pretest_data/`, then run:
 
@@ -89,6 +93,6 @@ Place pretest CSV exports in `analysis/pretest_data/`, then run:
 python analysis/pretest_analysis.py
 ```
 
-The script reads all CSV files in that directory, validates their columns, excludes files not labelled exclusively as `study_phase = manipulation_pretest`, and reports group sizes, means, SDs, high-minus-calibrated differences, 95% confidence intervals, Cohen's d, and a Welch independent-samples comparison for perceived AI confidence.
+The script uses the Python standard library only. It reads all CSV files in that directory, validates their columns, excludes files not labelled exclusively as `study_phase = manipulation_pretest`, and reports group sizes, means, SDs, high-minus-calibrated differences, 95% confidence intervals, Cohen's d, and a Welch independent-samples comparison for perceived AI confidence.
 
 The included `simulated_example.csv` exists only to test the workflow and is labelled `data_type = simulated`. Remove or move it before analyzing participant exports. The printed manipulation and confound thresholds are provisional development criteria, not universal scientific standards. Interpret descriptive patterns, effect sizes, uncertainty intervals, material quality, and p-values together; a small-sample p-value should never be the sole decision criterion.

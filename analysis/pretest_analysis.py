@@ -8,9 +8,6 @@ import math
 import statistics
 from pathlib import Path
 
-from scipy import stats
-
-
 CONDITIONS = ("high_confidence", "calibrated_confidence")
 RATINGS = (
     "perceived_ai_confidence",
@@ -80,6 +77,67 @@ def cohens_d(high: list[float], calibrated: list[float]) -> float:
     return (statistics.mean(high) - statistics.mean(calibrated)) / math.sqrt(pooled_variance)
 
 
+def _continued_beta(a: float, b: float, x: float) -> float:
+    maximum_iterations, epsilon, minimum = 200, 3e-14, 1e-300
+    qab, qap, qam = a + b, a + 1.0, a - 1.0
+    c, d = 1.0, 1.0 - qab * x / qap
+    d = 1.0 / (minimum if abs(d) < minimum else d)
+    result = d
+    for iteration in range(1, maximum_iterations + 1):
+        even = 2 * iteration
+        coefficient = iteration * (b - iteration) * x / ((qam + even) * (a + even))
+        d = 1.0 + coefficient * d
+        d = minimum if abs(d) < minimum else d
+        c = 1.0 + coefficient / c
+        c = minimum if abs(c) < minimum else c
+        d = 1.0 / d
+        result *= d * c
+        coefficient = -(a + iteration) * (qab + iteration) * x / ((a + even) * (qap + even))
+        d = 1.0 + coefficient * d
+        d = minimum if abs(d) < minimum else d
+        c = 1.0 + coefficient / c
+        c = minimum if abs(c) < minimum else c
+        d = 1.0 / d
+        delta = d * c
+        result *= delta
+        if abs(delta - 1.0) < epsilon:
+            return result
+    raise ArithmeticError("Incomplete beta calculation did not converge.")
+
+
+def _regularized_beta(x: float, a: float, b: float) -> float:
+    if x <= 0.0:
+        return 0.0
+    if x >= 1.0:
+        return 1.0
+    factor = math.exp(math.lgamma(a + b) - math.lgamma(a) - math.lgamma(b) + a * math.log(x) + b * math.log1p(-x))
+    if x < (a + 1.0) / (a + b + 2.0):
+        return factor * _continued_beta(a, b, x) / a
+    return 1.0 - factor * _continued_beta(b, a, 1.0 - x) / b
+
+
+def student_t_cdf(value: float, degrees_freedom: float) -> float:
+    if degrees_freedom <= 0:
+        raise ValueError("degrees_freedom must be positive")
+    if value == 0:
+        return 0.5
+    beta = _regularized_beta(degrees_freedom / (degrees_freedom + value * value), degrees_freedom / 2.0, 0.5)
+    return 1.0 - beta / 2.0 if value > 0 else beta / 2.0
+
+
+def student_t_quantile(probability: float, degrees_freedom: float) -> float:
+    if not 0.0 < probability < 1.0:
+        raise ValueError("probability must be between zero and one")
+    low, high = -100.0, 100.0
+    for _ in range(200):
+        midpoint = (low + high) / 2.0
+        if student_t_cdf(midpoint, degrees_freedom) < probability:
+            low = midpoint
+        else:
+            high = midpoint
+    return (low + high) / 2.0
+
+
 def compare_groups(high: list[float], calibrated: list[float]) -> dict[str, float]:
     if len(high) < 2 or len(calibrated) < 2:
         return {key: math.nan for key in ("difference", "ci_low", "ci_high", "d", "t", "df", "p")}
@@ -94,9 +152,9 @@ def compare_groups(high: list[float], calibrated: list[float]) -> dict[str, floa
             (high_var / len(high)) ** 2 / (len(high) - 1)
             + (calibrated_var / len(calibrated)) ** 2 / (len(calibrated) - 1)
         )
-        result = stats.ttest_ind(high, calibrated, equal_var=False)
-        t_value, p_value = float(result.statistic), float(result.pvalue)
-        margin = float(stats.t.ppf(0.975, df)) * standard_error
+        t_value = difference / standard_error
+        p_value = 2.0 * (1.0 - student_t_cdf(abs(t_value), df))
+        margin = student_t_quantile(0.975, df) * standard_error
     return {
         "difference": difference,
         "ci_low": difference - margin,

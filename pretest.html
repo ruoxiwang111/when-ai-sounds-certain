@@ -10,6 +10,7 @@
     <script src="https://unpkg.com/jspsych@8.2.2/dist/index.browser.min.js"></script>
     <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.1.0/dist/index.browser.min.js"></script>
     <script src="https://unpkg.com/@jspsych/plugin-survey-html-form@2.1.0/dist/index.browser.min.js"></script>
+    <script src="https://unpkg.com/@jspsych-contrib/plugin-pipe@0.6.0"></script>
   </head>
   <body>
     <div class="prototype-banner" role="note">Manipulation-language pretest — local test data only.</div>
@@ -23,6 +24,7 @@
           if (typeof window.initJsPsych !== "function") missing.push("jsPsych core");
           if (typeof window.jsPsychHtmlButtonResponse === "undefined") missing.push("HTML Button Response plugin");
           if (typeof window.jsPsychSurveyHtmlForm === "undefined") missing.push("Survey HTML Form plugin");
+          if (typeof window.jsPsychPipe === "undefined") missing.push("DataPipe plugin");
           const target = document.getElementById("pretest-target");
           if (target && target.childElementCount === 0) missing.push("the pretest ES module");
           if (!target || missing.length === 0) return;

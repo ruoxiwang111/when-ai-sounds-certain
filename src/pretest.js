@@ -1,6 +1,7 @@
 import { assignCondition } from "./conditions.js";
 import { downloadText, sessionToJson, trialsToCsv } from "./export.js";
 import { buildPretestPresentation, buildPretestRecord, PRETEST_MATERIAL, PRETEST_RATING_FIELDS } from "./pretest_data.js";
+import { buildRemotePayload, dataPipeUploadTrial, submissionResultHtml, uploadSucceeded } from "./pretest_remote_storage.js";
 
 const STUDY_VERSION = "0.2.0-prototype";
 
@@ -47,6 +48,7 @@ const session = {
   completed: false
 };
 let record = null;
+let remoteUploadSucceeded = false;
 
 const jsPsych = initJsPsych({ display_element: "pretest-target" });
 
@@ -91,14 +93,29 @@ const timeline = [
     }
   },
   {
+    ...dataPipeUploadTrial({
+      pluginType: jsPsychPipe,
+      sessionId: session.session_id,
+      getPayload: () => {
+        session.completed = true;
+        session.pretest_end_time ??= new Date().toISOString();
+        return buildRemotePayload(session, record);
+      },
+      onFinish: (data) => {
+        remoteUploadSucceeded = uploadSucceeded(data);
+        if (!remoteUploadSucceeded) console.error("DataPipe pretest upload failed", data.result);
+      }
+    })
+  },
+  {
     type: jsPsychHtmlButtonResponse,
-    stimulus: `<section class="study-card"><h2>Pretest complete</h2><p>Download this local test record as JSON or CSV. No data is sent to a server.</p><div class="download-actions"><button id="download-pretest-json" class="jspsych-btn" type="button">Download test JSON</button><button id="download-pretest-csv" class="jspsych-btn" type="button">Download test CSV</button></div></section>`,
+    stimulus: () => submissionResultHtml(remoteUploadSucceeded),
     choices: ["Finish"],
     on_load: () => {
-      session.completed = true;
-      session.pretest_end_time = new Date().toISOString();
+      if (remoteUploadSucceeded) return;
+      const localSession = () => ({ ...session, storage_mode: "local_export", record });
       document.getElementById("download-pretest-json").addEventListener("click", () => downloadText(
-        `${session.session_id}.json`, sessionToJson({ ...session, record }), "application/json"
+        `${session.session_id}.json`, sessionToJson(localSession()), "application/json"
       ));
       document.getElementById("download-pretest-csv").addEventListener("click", () => downloadText(
         `${session.session_id}.csv`, trialsToCsv([record]), "text/csv"
