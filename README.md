@@ -273,6 +273,9 @@ The project is currently in the experimental-material screening and manipulation
 
 No confirmatory claim is made about the effect of AI confidence language before completion of the main behavioral pilot and planned analysis.
 
+**Ruoxi Wang**  
+MSc Engineering and Education, University College London
+
 ---
 
 ## Research Areas
